@@ -1,50 +1,38 @@
-const { Expo } = require('expo-server-sdk');
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
+const { Expo } = require('expo-server-sdk');
+admin.initializeApp();
 
-// Expo のインスタンスを用意
+const db = admin.firestore();
 const expo = new Expo();
 
-// Firestore のインスタンスを用意
-admin.initializeApp();
-const settings = { timestampsInSnapshots: true };
-const db = admin.firestore();
-db.settings(settings);
-
-exports.sendNotification = functions.firestore
-  .document('talk/')
-  .onCreate(async () => {
-    // デバイストークンを Firestore から全検索
-    const query = db.collection('tokens').where('token', '>', '');
-    const snapshot = await query.get();
-    const tokens = snapshot.docs.map(doc => doc.get('token'));
-
-    // プッシュ通知用のメッセージオブジェクトを作成
+exports.sendMessage = functions.region('asia-northeast2').firestore
+  .document('talk/{talkId}')
+  .onUpdate((change, context) => {
+    const newValue = change.after.data();
+    const text = newValue.latestMessage.text;
+    const talkName = newValue.name;
+    const members = newValue.members;
+    // console.log(name,text,members)
     const messages = [];
-    tokens.forEach(pushToken => {
-      if (!Expo.isExpoPushToken(pushToken)) {
-        console.error(`Push token ${pushToken} is not a valid Expo push token`);
-      }
 
-      messages.push({
-        to: pushToken,
-        sound: 'default',
-        body: 'This is a test notification',
-        data: { withSome: 'data' },
-      });
-    });
-    const chunks = expo.chunkPushNotifications(messages);
-    const tickets = [];
-    (async () => {
-      // Expo Push API をリクエスト
-      for (let chunk of chunks) {
-        try {
-          const ticketChunk = await expo.sendPushNotificationsAsync(chunk);
-          console.log(ticketChunk);
-          tickets.push(...ticketChunk);
-        } catch (error) {
-          console.error(error);
+    for (const elem of members) {
+      const userRef = db.collection('tokens').doc(elem)
+      userRef.get().then((doc) => {
+        if (doc.exists) {
+          const data = doc.data()
+          const token = data.token
+            messages.push({
+              to: token,
+              sound: 'default',
+              title: talkName,
+              body: text,
+            });
+            console.log(messages)
+            expo.sendPushNotificationsAsync(messages)
+        } else {
+          null
         }
-      }
-    })();
+      })
+    }
   });
