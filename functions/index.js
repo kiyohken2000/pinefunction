@@ -13,6 +13,7 @@ exports.sendMessage = functions.region('asia-northeast2').firestore
     const text = newValue.latestMessage.text;
     const talkName = newValue.name;
     const members = newValue.members;
+    const email = newValue.latestMessage.email;
     // console.log(name,text,members)
 
     for (const elem of members) {
@@ -22,6 +23,8 @@ exports.sendMessage = functions.region('asia-northeast2').firestore
         if (doc.exists) {
           const data = doc.data()
           const token = data.token
+          const id = data.email
+          if (id != email) {
             message.push({
               to: token,
               sound: 'default',
@@ -30,9 +33,8 @@ exports.sendMessage = functions.region('asia-northeast2').firestore
             });
           console.log(message)
           expo.sendPushNotificationsAsync(message)
-        } else {
-          null
-        }
+          } else { null }
+        } else { null }
       })
     }
   });
