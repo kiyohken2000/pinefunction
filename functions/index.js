@@ -45,18 +45,34 @@ exports.sendMessage = functions.region('asia-northeast2').firestore
     .onCreate((snap, context) => {
       const newValue = snap.data();
       const comment = newValue.text;
-      console.log(comment)
+      const u = newValue.user._id
 
-      const formdata = {
-        'apikey':'DZZf7SoRWoozQmseljBkRKjvVKphwm8t',
-        'query':comment
-      }
-      fetch('https://api.a3rt.recruit-tech.co.jp/talk/v1/smalltalk',{
-        method: 'post',
-        body: formdata
-      }).then(response => {
-        response.json().then(data => {
-          console.log(data.results[0].reply);
-        })
-      }).catch(error => console.log(error));
+      if (u != 'XVY0p3KFxVaaQtq25JwlwWafUbs1') {
+        const params = new URLSearchParams();
+        params.append('apikey', "DZZf7SoRWoozQmseljBkRKjvVKphwm8t");
+        params.append('query', comment);
+        fetch('https://api.a3rt.recruit-tech.co.jp/talk/v1/smalltalk',{
+          method: 'post',
+          body: params
+        }).then(response => {
+          response.json().then(data => {
+            console.log(data.results[0].reply);
+            const text = data.results[0].reply;
+            const messageRef = db.collection('THREADS');
+            messageRef
+            .doc('WIMi5WBba4N2XNtK5o5g')
+            .collection('MESSAGES')
+            .add({
+              text,
+              createdAt: new Date().getTime(),
+              user: {
+                _id: 'XVY0p3KFxVaaQtq25JwlwWafUbs1',
+                email: 'pineprobot@pinepro.ml',
+                avatar: 'https://firebasestorage.googleapis.com/v0/b/kenmochat.appspot.com/o/avatar%2FXVY0p3KFxVaaQtq25JwlwWafUbs11621590414013?alt=media&token=1df9c1d1-edc8-496f-af3a-753db7ec5854',
+                name: 'PINE pro BOT',
+              }
+            });
+          })
+        }).catch(error => console.log(error));
+      } else { null }
   });

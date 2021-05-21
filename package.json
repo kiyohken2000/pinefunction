@@ -2,7 +2,6 @@
   "dependencies": {
     "expo-server-sdk": "^3.6.0",
     "firebase-admin": "^9.6.0",
-    "firebase-functions": "^3.13.2",
-    "form-data": "^4.0.0"
+    "firebase-functions": "^3.13.2"
   }
 }
