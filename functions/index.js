@@ -68,7 +68,7 @@ exports.sendMessage = functions.region('asia-northeast2').firestore
               user: {
                 _id: 'XVY0p3KFxVaaQtq25JwlwWafUbs1',
                 email: 'pineprobot@pinepro.ml',
-                avatar: 'https://firebasestorage.googleapis.com/v0/b/kenmochat.appspot.com/o/avatar%2FXVY0p3KFxVaaQtq25JwlwWafUbs11621590414013?alt=media&token=1df9c1d1-edc8-496f-af3a-753db7ec5854',
+                avatar: 'https://firebasestorage.googleapis.com/v0/b/kenmochat.appspot.com/o/avatar%2FXVY0p3KFxVaaQtq25JwlwWafUbs11621592754467?alt=media&token=f2366ddf-dc22-4977-a80c-496c5394c8fb',
                 name: 'PINE pro BOT',
               }
             });
