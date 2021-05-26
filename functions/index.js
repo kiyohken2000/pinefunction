@@ -120,17 +120,28 @@ exports.sendMessage = functions.region('asia-northeast2').firestore
             };
             console.log("Request success!");
             if (result.data) {
-              const labels = result.data.responses[0].labelAnnotations;
-              const descriptions = labels.map(label => label.description);
-              const dStr = descriptions.join('か');
-              const text = `これは${dStr} たぶんね`;
-              console.log(text);
-              messageRef
-              .add({
-                text,
-                createdAt: t,
-                user: u
-              });
+              const labels = await result.data.responses[0].labelAnnotations;
+              if (labels) {
+                const descriptions = await labels.map(label => label.description);
+                const dStr = descriptions.join('か');
+                const text = `これは${dStr} たぶんね`;
+                console.log(text);
+                messageRef
+                .add({
+                  text,
+                  createdAt: t,
+                  user: u
+                });
+              } else {
+                const text = 'わからん';
+                console.log(text);
+                messageRef
+                .add({
+                  text,
+                  createdAt: t,
+                  user: u
+                });
+              }
             } else {
               const text = 'わからん';
               console.log(text);
