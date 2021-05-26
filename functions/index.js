@@ -110,26 +110,35 @@ exports.sendMessage = functions.region('asia-northeast2').firestore
         (async function () {
           try {
             const result = await axios.post(visionApiUrl, options);
+            const messageRef = db.collection('THREADS').doc('WIMi5WBba4N2XNtK5o5g').collection('MESSAGES');
+            const t = new Date().getTime();
+            const u = {
+              _id: 'cYx7BY4HJWVL7KT7iAelCwiDaUl2',
+              email: 'pinproimagebot@pinepro.ml',
+              avatar: 'https://firebasestorage.googleapis.com/v0/b/kenmochat.appspot.com/o/avatar%2FcYx7BY4HJWVL7KT7iAelCwiDaUl21622003719314?alt=media&token=c4f520cb-4591-4670-b17d-9c96caaab08c',
+              name: 'PINE pro image BOT',
+            };
             console.log("Request success!");
             if (result.data) {
               const labels = result.data.responses[0].labelAnnotations;
               const descriptions = labels.map(label => label.description);
               const dStr = descriptions.join('か');
               const text = `これは${dStr} たぶんね`;
-              console.log(text)
-              const messageRef = db.collection('THREADS');
+              console.log(text);
               messageRef
-              .doc('WIMi5WBba4N2XNtK5o5g')
-              .collection('MESSAGES')
               .add({
                 text,
-                createdAt: new Date().getTime(),
-                user: {
-                  _id: 'cYx7BY4HJWVL7KT7iAelCwiDaUl2',
-                  email: 'pinproimagebot@pinepro.ml',
-                  avatar: 'https://firebasestorage.googleapis.com/v0/b/kenmochat.appspot.com/o/avatar%2FcYx7BY4HJWVL7KT7iAelCwiDaUl21622003719314?alt=media&token=c4f520cb-4591-4670-b17d-9c96caaab08c',
-                  name: 'PINE pro image BOT',
-                }
+                createdAt: t,
+                user: u
+              });
+            } else {
+              const text = 'わからん';
+              console.log(text);
+              messageRef
+              .add({
+                text,
+                createdAt: t,
+                user: u
               });
             }
           } catch (error) {
