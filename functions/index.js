@@ -43,7 +43,7 @@ exports.sendMessage = functions.region('asia-northeast2').firestore
   });
 
   exports.botMessage = functions.region('asia-northeast2').firestore
-    .document('THREADS/WIMi5WBba4N2XNtK5o5g/MESSAGES/{chatId}')
+    .document('THREADS/ABhgiSmURLR0xCtPR5C5/MESSAGES/{chatId}')
     .onCreate((snap, context) => {
       const newValue = snap.data();
       const comment = newValue.text;
@@ -63,7 +63,7 @@ exports.sendMessage = functions.region('asia-northeast2').firestore
               const text = data.results[0].reply;
               const messageRef = db.collection('THREADS');
               messageRef
-              .doc('WIMi5WBba4N2XNtK5o5g')
+              .doc('ABhgiSmURLR0xCtPR5C5')
               .collection('MESSAGES')
               .add({
                 text,
@@ -82,11 +82,11 @@ exports.sendMessage = functions.region('asia-northeast2').firestore
   });
 
   exports.imageBotMessage = functions.region('asia-northeast2').firestore
-    .document('THREADS/WIMi5WBba4N2XNtK5o5g/MESSAGES/{chatId}')
+    .document('THREADS/ABhgiSmURLR0xCtPR5C5/MESSAGES/{chatId}')
     .onCreate((snap, context) => {
       const newValue = snap.data();
       const image = newValue.image;
-      const messageRef = db.collection('THREADS').doc('WIMi5WBba4N2XNtK5o5g').collection('MESSAGES');
+      const messageRef = db.collection('THREADS').doc('ABhgiSmURLR0xCtPR5C5').collection('MESSAGES');
       const t = new Date().getTime();
       const u = {
         _id: 'cYx7BY4HJWVL7KT7iAelCwiDaUl2',
