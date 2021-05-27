@@ -86,6 +86,20 @@ exports.sendMessage = functions.region('asia-northeast2').firestore
     .onCreate((snap, context) => {
       const newValue = snap.data();
       const image = newValue.image;
+      const messageRef = db.collection('THREADS').doc('WIMi5WBba4N2XNtK5o5g').collection('MESSAGES');
+      const t = new Date().getTime();
+      const u = {
+        _id: 'cYx7BY4HJWVL7KT7iAelCwiDaUl2',
+        email: 'pinproimagebot@pinepro.ml',
+        avatar: 'https://firebasestorage.googleapis.com/v0/b/kenmochat.appspot.com/o/avatar%2FcYx7BY4HJWVL7KT7iAelCwiDaUl21622003719314?alt=media&token=c4f520cb-4591-4670-b17d-9c96caaab08c',
+        name: 'PINE pro image BOT',
+      };
+      const us = {
+        _id: 'GrB69PO5oyaTTXbRmLJYqcKGFzf2',
+        email: 'pineproimagebot@pinepro.ml',
+        avatar: 'https://firebasestorage.googleapis.com/v0/b/kenmochat.appspot.com/o/avatar%2FGrB69PO5oyaTTXbRmLJYqcKGFzf21622094941027?alt=media&token=b82d4765-e603-46eb-ad8e-c213e286e2b0',
+        name: 'PINE pro image BOT',
+      };
       const apiKey = 'AIzaSyAwHurWva6sJxhhIFiqTr3oqN5G_P4d0_8';
       const visionApiUrl = `https://vision.googleapis.com/v1/images:annotate?key=${apiKey}`;
       const options = {
@@ -105,19 +119,23 @@ exports.sendMessage = functions.region('asia-northeast2').firestore
           }
         ]        
       };
+      const COMPUTER_VISION_API_ENDPOINT_URL = 'https://japaneast.api.cognitive.microsoft.com/vision/v3.2/analyze?visualFeatures=Description&language=ja&model-version=latest';
+      const configCustomVisionAPI = {
+        url: COMPUTER_VISION_API_ENDPOINT_URL,
+        method: 'post',
+        headers: {
+          'Content-type': 'application/json',
+          'Ocp-Apim-Subscription-Key':'85af9ada81b445b3adfcf8094c4d6e78'
+        },
+        data: {
+          url:image
+        }
+      };
 
       if (image) {
         (async function () {
           try {
             const result = await axios.post(visionApiUrl, options);
-            const messageRef = db.collection('THREADS').doc('WIMi5WBba4N2XNtK5o5g').collection('MESSAGES');
-            const t = new Date().getTime();
-            const u = {
-              _id: 'cYx7BY4HJWVL7KT7iAelCwiDaUl2',
-              email: 'pinproimagebot@pinepro.ml',
-              avatar: 'https://firebasestorage.googleapis.com/v0/b/kenmochat.appspot.com/o/avatar%2FcYx7BY4HJWVL7KT7iAelCwiDaUl21622003719314?alt=media&token=c4f520cb-4591-4670-b17d-9c96caaab08c',
-              name: 'PINE pro image BOT',
-            };
             console.log("Request success!");
             if (result.data) {
               const labels = await result.data.responses[0].labelAnnotations;
@@ -154,6 +172,32 @@ exports.sendMessage = functions.region('asia-northeast2').firestore
             }
           } catch (error) {
             console.error('error', error.response || error);
+          }
+          try {
+            const response = await axios.request(configCustomVisionAPI);
+            console.log(response.data.description.captions[0].text)
+            const res = response.data.description.captions[0].text
+            const ti = new Date().getTime();
+            if(res) {
+              const text = `あるいは ${res} かも`;
+              messageRef
+              .add({
+                text,
+                createdAt: ti,
+                user: us
+              });
+            } else {
+              const text = 'やっぱりわからん';
+              messageRef
+              .add({
+                text,
+                createdAt: ti,
+                user: us
+              });
+            }
+          } catch (error) {
+            console.log("post Error");
+            console.error(error);
           }
         })();
       } else { null }
