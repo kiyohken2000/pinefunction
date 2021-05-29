@@ -2,8 +2,8 @@ const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 const { Expo } = require('expo-server-sdk');
 const fetch = require('node-fetch');
-const vision = require('@google-cloud/vision');
 const axios = require("axios");
+const request = require('request')
 admin.initializeApp();
 
 const db = admin.firestore();
@@ -43,13 +43,13 @@ exports.sendMessage = functions.region('asia-northeast2').firestore
   });
 
   exports.botMessage = functions.region('asia-northeast2').firestore
-    .document('THREADS/ABhgiSmURLR0xCtPR5C5/MESSAGES/{chatId}')
+    .document('THREADS/rUp75QcwZnt5OuuzTfPo/MESSAGES/{chatId}')
     .onCreate((snap, context) => {
       const newValue = snap.data();
       const comment = newValue.text;
       const u = newValue.user._id;
 
-      if (comment) {
+      if (comment && comment != 'kenmo') {
         if (u != 'XVY0p3KFxVaaQtq25JwlwWafUbs1') {
           const params = new URLSearchParams();
           params.append('apikey', "DZZf7SoRWoozQmseljBkRKjvVKphwm8t");
@@ -63,7 +63,7 @@ exports.sendMessage = functions.region('asia-northeast2').firestore
               const text = data.results[0].reply;
               const messageRef = db.collection('THREADS');
               messageRef
-              .doc('ABhgiSmURLR0xCtPR5C5')
+              .doc('rUp75QcwZnt5OuuzTfPo')
               .collection('MESSAGES')
               .add({
                 text,
@@ -82,11 +82,11 @@ exports.sendMessage = functions.region('asia-northeast2').firestore
   });
 
   exports.imageBotMessage = functions.region('asia-northeast2').firestore
-    .document('THREADS/ABhgiSmURLR0xCtPR5C5/MESSAGES/{chatId}')
+    .document('THREADS/rUp75QcwZnt5OuuzTfPo/MESSAGES/{chatId}')
     .onCreate((snap, context) => {
       const newValue = snap.data();
       const image = newValue.image;
-      const messageRef = db.collection('THREADS').doc('ABhgiSmURLR0xCtPR5C5').collection('MESSAGES');
+      const messageRef = db.collection('THREADS').doc('rUp75QcwZnt5OuuzTfPo').collection('MESSAGES');
       const t = new Date().getTime();
       const u = {
         _id: 'cYx7BY4HJWVL7KT7iAelCwiDaUl2',
@@ -200,5 +200,52 @@ exports.sendMessage = functions.region('asia-northeast2').firestore
             console.error(error);
           }
         })();
+      } else { null }
+  });
+
+  exports.kenmoBotMessage = functions.region('asia-northeast2').firestore
+    .document('THREADS/rUp75QcwZnt5OuuzTfPo/MESSAGES/{chatId}')
+    .onCreate((snap, context) => {
+      const newValue = snap.data();
+      const comment = newValue.text;
+      const messageRef = db.collection('THREADS').doc('rUp75QcwZnt5OuuzTfPo').collection('MESSAGES');
+      const t = new Date().getTime();
+      const u = {
+        _id: 'XVY0p3KFxVaaQtq25JwlwWafUbs1',
+        email: 'pineprobot@pinepro.ml',
+        avatar: 'https://firebasestorage.googleapis.com/v0/b/kenmochat.appspot.com/o/avatar%2FXVY0p3KFxVaaQtq25JwlwWafUbs11621592754467?alt=media&token=f2366ddf-dc22-4977-a80c-496c5394c8fb',
+        name: 'PINE pro BOT',
+      };
+      const options = {
+        url: 'https://itest.5ch.net/subbacks/poverty.json',
+        method: 'GET',
+        json: true
+      }
+
+      if (comment === 'kenmo') {
+        request(options, function (error, response, body) {
+          console.log('現在のスレッド数',body.total_count);
+          const threads = body.threads;
+          const titles = threads.map(thread => thread[5]);
+          const tts = titles.slice(0, 10)
+          const top = tts.join('\n');
+          console.log(top)
+          const text = top;
+            messageRef
+            .add({
+              text,
+              createdAt: t,
+              user: u
+            });
+          if (error) {
+            const text = '失敗、嫌儲落ちてるかも';
+              messageRef
+              .add({
+                text,
+                createdAt: t,
+                user: u
+              });
+          }
+        })
       } else { null }
   });
