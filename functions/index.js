@@ -43,7 +43,7 @@ exports.sendMessage = functions.region('asia-northeast2').firestore
   });
 
   exports.botMessage = functions.region('asia-northeast2').firestore
-    .document('THREADS/rUp75QcwZnt5OuuzTfPo/MESSAGES/{chatId}')
+    .document('THREADS/Dj04ExLoykNI2sbmOVeW/MESSAGES/{chatId}')
     .onCreate((snap, context) => {
       const newValue = snap.data();
       const comment = newValue.text;
@@ -63,7 +63,7 @@ exports.sendMessage = functions.region('asia-northeast2').firestore
               const text = data.results[0].reply;
               const messageRef = db.collection('THREADS');
               messageRef
-              .doc('rUp75QcwZnt5OuuzTfPo')
+              .doc('Dj04ExLoykNI2sbmOVeW')
               .collection('MESSAGES')
               .add({
                 text,
@@ -82,11 +82,11 @@ exports.sendMessage = functions.region('asia-northeast2').firestore
   });
 
   exports.imageBotMessage = functions.region('asia-northeast2').firestore
-    .document('THREADS/rUp75QcwZnt5OuuzTfPo/MESSAGES/{chatId}')
+    .document('THREADS/Dj04ExLoykNI2sbmOVeW/MESSAGES/{chatId}')
     .onCreate((snap, context) => {
       const newValue = snap.data();
       const image = newValue.image;
-      const messageRef = db.collection('THREADS').doc('rUp75QcwZnt5OuuzTfPo').collection('MESSAGES');
+      const messageRef = db.collection('THREADS').doc('Dj04ExLoykNI2sbmOVeW').collection('MESSAGES');
       const t = new Date().getTime();
       const u = {
         _id: 'cYx7BY4HJWVL7KT7iAelCwiDaUl2',
@@ -204,11 +204,11 @@ exports.sendMessage = functions.region('asia-northeast2').firestore
   });
 
   exports.kenmoBotMessage = functions.region('asia-northeast2').firestore
-    .document('THREADS/rUp75QcwZnt5OuuzTfPo/MESSAGES/{chatId}')
+    .document('THREADS/Dj04ExLoykNI2sbmOVeW/MESSAGES/{chatId}')
     .onCreate((snap, context) => {
       const newValue = snap.data();
       const comment = newValue.text;
-      const messageRef = db.collection('THREADS').doc('rUp75QcwZnt5OuuzTfPo').collection('MESSAGES');
+      const messageRef = db.collection('THREADS').doc('Dj04ExLoykNI2sbmOVeW').collection('MESSAGES');
       const t = new Date().getTime();
       const u = {
         _id: 'XVY0p3KFxVaaQtq25JwlwWafUbs1',
