@@ -249,3 +249,101 @@ exports.sendMessage = functions.region('asia-northeast2').firestore
         })
       } else { null }
   });
+
+  exports.translation = functions.region('asia-northeast2').firestore
+    .document('THREADS/o65qDbjlphSbs281TDX3/MESSAGES/{chatId}')
+    .onCreate((snap, context) => {
+      const newValue = snap.data();
+      const comment = newValue.text;
+      const user = newValue.user._id;
+      const messageRef = db.collection('THREADS').doc('o65qDbjlphSbs281TDX3').collection('MESSAGES');
+      const t = new Date().getTime();
+      const u = {
+        _id: 'vScvjdhKU8VgjrIwINThWEAYUro1',
+        email: 'pineprotranslation@pinepro.ml',
+        avatar: 'https://firebasestorage.googleapis.com/v0/b/kenmochat.appspot.com/o/avatar%2FvScvjdhKU8VgjrIwINThWEAYUro11622597058533?alt=media&token=ee015141-d7b5-4d1c-919a-8067b642f26a',
+        name: 'PINE pro translation BOT ru',
+      };
+
+      const fromLang = 'ja'
+      const toLang = 'ru'
+      const apiKey = 'AIzaSyAwHurWva6sJxhhIFiqTr3oqN5G_P4d0_8'
+
+      const URL = "https://translation.googleapis.com/language/translate/v2?key="+apiKey+"&q="+encodeURI(comment)+"&source="+fromLang+"&target="+toLang
+      const options = {
+        url: URL,
+        method: 'GET',
+        json: true
+      }
+
+      if (user != 'vScvjdhKU8VgjrIwINThWEAYUro1') {
+        request(options, function (error, response, body) {
+          console.log(body.data.translations[0].translatedText);
+          const text = body.data.translations[0].translatedText;
+            messageRef
+            .add({
+              text,
+              createdAt: t,
+              user: u
+            });
+          if (error) {
+            const text = 'わからん';
+              messageRef
+              .add({
+                text,
+                createdAt: t,
+                user: u
+              });
+          }
+        })
+      } else { null }
+  });
+
+  exports.translationKr = functions.region('asia-northeast2').firestore
+    .document('THREADS/T5XMlAahT3dWwHfxFnqH/MESSAGES/{chatId}')
+    .onCreate((snap, context) => {
+      const newValue = snap.data();
+      const comment = newValue.text;
+      const user = newValue.user._id;
+      const messageRef = db.collection('THREADS').doc('T5XMlAahT3dWwHfxFnqH').collection('MESSAGES');
+      const t = new Date().getTime();
+      const u = {
+        _id: 'XkBevYAjDDQO04UW8MGDTrPL4063',
+        email: 'pineprotranslationkr@pinepro.ml',
+        avatar: 'https://firebasestorage.googleapis.com/v0/b/kenmochat.appspot.com/o/avatar%2FXkBevYAjDDQO04UW8MGDTrPL40631622597137740?alt=media&token=b23141bd-95bb-4916-9c96-28e339e87e96',
+        name: 'PINE pro translation kr',
+      };
+
+      const fromLang = 'ja'
+      const toLang = 'ko'
+      const apiKey = 'AIzaSyAwHurWva6sJxhhIFiqTr3oqN5G_P4d0_8'
+
+      const URL = "https://translation.googleapis.com/language/translate/v2?key="+apiKey+"&q="+encodeURI(comment)+"&source="+fromLang+"&target="+toLang
+      const options = {
+        url: URL,
+        method: 'GET',
+        json: true
+      }
+
+      if (user != 'XkBevYAjDDQO04UW8MGDTrPL4063') {
+        request(options, function (error, response, body) {
+          console.log(body.data.translations[0].translatedText);
+          const text = body.data.translations[0].translatedText;
+            messageRef
+            .add({
+              text,
+              createdAt: t,
+              user: u
+            });
+          if (error) {
+            const text = 'わからん';
+              messageRef
+              .add({
+                text,
+                createdAt: t,
+                user: u
+              });
+          }
+        })
+      } else { null }
+  });
