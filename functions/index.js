@@ -17,29 +17,34 @@ exports.sendMessage = functions.region('asia-northeast2').firestore
     const talkName = newValue.name;
     const members = newValue.members;
     const email = newValue.latestMessage.email;
+    const previousValue = change.before.data();
+    const newTime = newValue.latestMessage.createdAt;
+    const prevTime = previousValue.latestMessage.createdAt;
     // console.log(name,text,members)
 
-    for (const elem of members) {
-      const message = [];
-      const userRef = db.collection('tokens').doc(elem)
-      userRef.get().then((doc) => {
-        if (doc.exists) {
-          const data = doc.data()
-          const token = data.token
-          const id = data.email
-          if (id != email) {
-            message.push({
-              to: token,
-              sound: 'default',
-              title: talkName,
-              body: text,
-            });
-          console.log(message)
-          expo.sendPushNotificationsAsync(message)
+    if (newTime != prevTime) {
+      for (const elem of members) {
+        const message = [];
+        const userRef = db.collection('tokens').doc(elem)
+        userRef.get().then((doc) => {
+          if (doc.exists) {
+            const data = doc.data()
+            const token = data.token
+            const id = data.email
+            if (id != email) {
+              message.push({
+                to: token,
+                sound: 'default',
+                title: talkName,
+                body: text,
+              });
+            console.log(message)
+            expo.sendPushNotificationsAsync(message)
+            } else { null }
           } else { null }
-        } else { null }
-      })
-    }
+        })
+      }
+    } else { null }
   });
 
   exports.botMessage = functions.region('asia-northeast2').firestore
