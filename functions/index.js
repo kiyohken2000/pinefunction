@@ -372,7 +372,7 @@ exports.sendMessage = functions.region('asia-northeast2').firestore
           user: {
             _id: 'Phy7XmUDoeTwQswXI5hXli9Pnrx1',
             email: 'abeshinzo@kantei.go.jp',
-            avatar: 'https://firebasestorage.googleapis.com/v0/b/kenmochat.appspot.com/o/avatar%2FPhy7XmUDoeTwQswXI5hXli9Pnrx11623930608603?alt=media&token=151d49f9-aa2b-40b7-8848-00d2cc047e51',
+            avatar: 'https://firebasestorage.googleapis.com/v0/b/kenmochat.appspot.com/o/avatar%2Ffe5ff7f6.jpg?alt=media&token=eb2123d0-e005-4574-9967-902333832410',
             name: '安倍晋三公式✅',
           }
         });
@@ -382,7 +382,7 @@ exports.sendMessage = functions.region('asia-northeast2').firestore
           {
             latestMessage: {
               text,
-              avatar: 'https://firebasestorage.googleapis.com/v0/b/kenmochat.appspot.com/o/avatar%2FPhy7XmUDoeTwQswXI5hXli9Pnrx11623930608603?alt=media&token=151d49f9-aa2b-40b7-8848-00d2cc047e51',
+              avatar: 'https://firebasestorage.googleapis.com/v0/b/kenmochat.appspot.com/o/avatar%2Ffe5ff7f6.jpg?alt=media&token=eb2123d0-e005-4574-9967-902333832410',
               createdAt: new Date().getTime()
             }
           },
