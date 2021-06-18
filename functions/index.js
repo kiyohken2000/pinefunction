@@ -4,6 +4,7 @@ const { Expo } = require('expo-server-sdk');
 const fetch = require('node-fetch');
 const axios = require("axios");
 const request = require('request')
+const arr = require('./shinzo');
 admin.initializeApp();
 
 const db = admin.firestore();
@@ -351,4 +352,41 @@ exports.sendMessage = functions.region('asia-northeast2').firestore
           }
         })
       } else { null }
+  });
+
+  exports.abeBotMessage = functions.region('asia-northeast2').firestore
+    .document('THREADS/zBVTu3ZWHN69NEuBfU0P/MESSAGES/{chatId}')
+    .onCreate((snap, context) => {
+      const newValue = snap.data();
+      const u = newValue.user._id;
+      const text = arr[Math.floor(Math.random() * arr.length)]
+
+      if ( u != 'Phy7XmUDoeTwQswXI5hXli9Pnrx1') {
+        const messageRef = db.collection('THREADS');
+        messageRef
+        .doc('zBVTu3ZWHN69NEuBfU0P')
+        .collection('MESSAGES')
+        .add({
+          text,
+          createdAt: new Date().getTime(),
+          user: {
+            _id: 'Phy7XmUDoeTwQswXI5hXli9Pnrx1',
+            email: 'abeshinzo@kantei.go.jp',
+            avatar: 'https://firebasestorage.googleapis.com/v0/b/kenmochat.appspot.com/o/avatar%2FPhy7XmUDoeTwQswXI5hXli9Pnrx11623930608603?alt=media&token=151d49f9-aa2b-40b7-8848-00d2cc047e51',
+            name: '安倍晋三公式✅',
+          }
+        });
+        messageRef
+        .doc('zBVTu3ZWHN69NEuBfU0P')
+        .set(
+          {
+            latestMessage: {
+              text,
+              avatar: 'https://firebasestorage.googleapis.com/v0/b/kenmochat.appspot.com/o/avatar%2FPhy7XmUDoeTwQswXI5hXli9Pnrx11623930608603?alt=media&token=151d49f9-aa2b-40b7-8848-00d2cc047e51',
+              createdAt: new Date().getTime()
+            }
+          },
+          { merge: true }
+        );
+      }
   });
