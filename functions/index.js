@@ -5,10 +5,14 @@ const fetch = require('node-fetch');
 const axios = require("axios");
 const request = require('request')
 const arr = require('./shinzo');
+const {ClarifaiStub, grpc} = require("clarifai-nodejs-grpc");
 admin.initializeApp();
 
 const db = admin.firestore();
 const expo = new Expo();
+const stub = ClarifaiStub.grpc();
+const metadata = new grpc.Metadata();
+metadata.set("authorization", "Key e4137b1580e446e5bd36a78cd6b92fd3");
 
 exports.sendMessage = functions.region('asia-northeast2').firestore
   .document('talk/{talkId}')
@@ -125,7 +129,7 @@ exports.sendMessage = functions.region('asia-northeast2').firestore
           }
         ]        
       };
-      const COMPUTER_VISION_API_ENDPOINT_URL = 'https://japaneast.api.cognitive.microsoft.com/vision/v3.2/analyze?visualFeatures=Description&language=ja&model-version=latest';
+      /*const COMPUTER_VISION_API_ENDPOINT_URL = 'https://japaneast.api.cognitive.microsoft.com/vision/v3.2/analyze?visualFeatures=Description&language=ja&model-version=latest';
       const configCustomVisionAPI = {
         url: COMPUTER_VISION_API_ENDPOINT_URL,
         method: 'post',
@@ -136,7 +140,7 @@ exports.sendMessage = functions.region('asia-northeast2').firestore
         data: {
           url:image
         }
-      };
+      };*/
 
       if (image) {
         (async function () {
@@ -179,7 +183,7 @@ exports.sendMessage = functions.region('asia-northeast2').firestore
           } catch (error) {
             console.error('error', error.response || error);
           }
-          try {
+          /*try {
             const response = await axios.request(configCustomVisionAPI);
             console.log(response.data.description.captions[0].text)
             const res = response.data.description.captions[0].text
@@ -204,7 +208,46 @@ exports.sendMessage = functions.region('asia-northeast2').firestore
           } catch (error) {
             console.log("post Error");
             console.error(error);
-          }
+          }*/
+          stub.PostModelOutputs(
+            {
+              model_id: "aaa03c23b3724a16a56b629203edc62c",
+              inputs: [{data: {image: {url: image}}}]
+            },
+            metadata,
+            (err, response) => {
+              if (err) {
+                console.log("Error: " + err);
+                return;
+              }
+              if (response.status.code !== 10000) {
+                console.log("Received failed status: " + response.status.description + "\n" + response.status.details);
+                return;
+              }
+              console.log("Predicted concepts, with confidence values:")
+              const clarifaidata = response.outputs[0].data.concepts
+              const labels = clarifaidata.map(label => label.name);
+              const dStr = labels.join(' 、');
+              const ti = new Date().getTime();
+              if(clarifaidata) {
+                const text = `あるいは ${dStr} かも`;
+                messageRef
+                .add({
+                  text,
+                  createdAt: ti,
+                  user: us
+                });
+              } else {
+                const text = 'やっぱりわからん';
+                messageRef
+                .add({
+                  text,
+                  createdAt: ti,
+                  user: us
+                });
+              }
+            }
+        );
         })();
       } else { null }
   });
