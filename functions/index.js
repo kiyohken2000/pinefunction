@@ -64,7 +64,7 @@ exports.sendMessage = functions.region('asia-northeast2').firestore
           const params = new URLSearchParams();
           params.append('apikey', "DZZf7SoRWoozQmseljBkRKjvVKphwm8t");
           params.append('query', comment);
-          fetch('https://api.a3rt.recruit-tech.co.jp/talk/v1/smalltalk',{
+          fetch('https://api.a3rt.recruit.co.jp/talk/v1/smalltalk',{
             method: 'post',
             body: params
           }).then(response => {
