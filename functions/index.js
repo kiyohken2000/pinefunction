@@ -42,6 +42,7 @@ exports.sendMessage = functions.region('asia-northeast2').firestore
                 sound: 'default',
                 title: talkName,
                 body: text,
+                badge: 1,
               });
             console.log(message)
             expo.sendPushNotificationsAsync(message)
